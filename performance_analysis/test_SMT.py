@@ -58,7 +58,7 @@ def process_puzzles(folder_path, output_folder, kenken2smt_path):
 
     for root, dirs, files in os.walk(folder_path):
         if not dirs: # if there are no subfolders
-            root = root.replace("puzzles/", "") # remove the "puzzles" part of the path
+            root = root.replace("puzzles/", "") # remove the "puzzles" path part of the path
             root = root.replace("../", "") # remove the "../" part of the path
             puzzle_output_folder = os.path.join(output_folder, root)
             create_output_folder(puzzle_output_folder)
@@ -66,8 +66,8 @@ def process_puzzles(folder_path, output_folder, kenken2smt_path):
             for file_name in files:
                 if file_name.endswith('.txt') and "solution" not in file_name:
                     puzzle_number = re.findall('\d+', file_name)[0]
-                    file_path = os.path.join(folder_path, root, file_name)
-                    run_kenken2smt(file_path, puzzle_number)
+                    puzzle_file_path = os.path.join(folder_path, file_name)
+                    run_kenken2smt(puzzle_file_path, puzzle_number)
                     run_mathsat(puzzle_number, puzzle_output_folder)
 
 # Parse output file to get statistics
@@ -75,8 +75,7 @@ def get_statistics(output_folder):
 
     for root, dirs, files in os.walk(output_folder):
         if not dirs: # if there are no subfolders
-            root = root.replace("output/", "") # remove the "puzzles" part of the path
-            puzzle_output_folder = os.path.join(output_folder, root)
+            puzzle_output_folder = root
             print("Getting statistics for: ", puzzle_output_folder, "...")
             stats_list = []
             
