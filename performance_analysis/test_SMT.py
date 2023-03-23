@@ -25,6 +25,8 @@ def delete_file(file_path):
 def delete_folder(folder_path):
     shutil.rmtree(folder_path)
 
+def check_file_empty(file_path):
+    return os.stat(file_path).st_size == 0
 
 def run_kenken2smt(puzzle, i):
     output_file = "puzzle_{}.smt".format(i)
@@ -36,9 +38,10 @@ def run_kenken2smt(puzzle, i):
 def run_mathsat(i, output_folder_path): 
     input_file = "puzzle_{}.smt".format(i)
     
-    # check if the mathsat input file exists
-    if (not os.path.exists(input_file)):
-        print("Mathsat input file does not exist: ", input_file)
+    # check if the mathsat input file is empty (i.e. kenken2smt failed)
+    if (check_file_empty(input_file)):
+        print("Mathsat input file does not exist: {}".format(input_file))
+        delete_file(input_file)
         return
     
     output_file = os.path.join(output_folder_path, "model_{}.smt".format(i))
@@ -150,5 +153,5 @@ if __name__ == '__main__':
     args = parse_args(sys.argv[1:])
 
     process_puzzles(args.input, args.output, args.kenken2smt)
-    #get_statistics(args.output)
+    get_statistics(args.output)
     
