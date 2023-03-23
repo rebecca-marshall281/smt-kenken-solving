@@ -35,6 +35,12 @@ def run_kenken2smt(puzzle, i):
 
 def run_mathsat(i, output_folder_path): 
     input_file = "puzzle_{}.smt".format(i)
+    
+    # check if the mathsat input file exists
+    if (not os.path.exists(input_file)):
+        print("Mathsat input file does not exist: ", input_file)
+        return
+    
     output_file = os.path.join(output_folder_path, "model_{}.smt".format(i))
 
     # Run the minisat command and capture the output in a file
@@ -144,5 +150,5 @@ if __name__ == '__main__':
     args = parse_args(sys.argv[1:])
 
     process_puzzles(args.input, args.output, args.kenken2smt)
-    get_statistics(args.output)
+    #get_statistics(args.output)
     
