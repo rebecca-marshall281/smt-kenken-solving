@@ -52,21 +52,20 @@ def create_output_folder(new_dir):
 # Run all puzzles with kenken2smt and mathsat
 def process_puzzles(folder_path, output_folder, kenken2smt_path):    
     create_output_folder(output_folder)
-
-    if not os.path.exists(kenken2smt_path):
+    
+    if not os.path.exists("kenken2smt"):
         copy_file(kenken2smt_path)
-
+    
     for root, dirs, files in os.walk(folder_path):
         if not dirs: # if there are no subfolders
-            root = root.replace("puzzles/", "") # remove the "puzzles" path part of the path
-            root = root.replace("../", "") # remove the "../" part of the path
-            puzzle_output_folder = os.path.join(output_folder, root)
+            print("Processing puzzles in: ", root , "...")
+            output_sub_folders = root.replace(folder_path, "") # remove the input folder name from the path
+            puzzle_output_folder = os.path.join(output_folder, output_sub_folders)
             create_output_folder(puzzle_output_folder)
-            print("Processing puzzles in: ", puzzle_output_folder, "...")
             for file_name in files:
                 if file_name.endswith('.txt') and "solution" not in file_name:
                     puzzle_number = re.findall('\d+', file_name)[0]
-                    puzzle_file_path = os.path.join(folder_path, file_name)
+                    puzzle_file_path = os.path.join(root, file_name)
                     run_kenken2smt(puzzle_file_path, puzzle_number)
                     run_mathsat(puzzle_number, puzzle_output_folder)
 
@@ -85,7 +84,10 @@ def get_statistics(output_folder):
                     with open(file_path, "r") as file:
                         stat_content = file.read()
                         stats = parse_statistics(stat_content)
-                        stats_list.append(stats)
+                        if stats == {}:
+                            print("No statistics found for: ", file_path)
+                        else:
+                            stats_list.append(stats)
 
             get_worst_and_average_case(stats_list, puzzle_output_folder)
 
@@ -141,6 +143,6 @@ def parse_args(args):
 if __name__ == '__main__':
     args = parse_args(sys.argv[1:])
 
-    process_puzzles(args.input, args.output, args.kenken2smt)
+    #process_puzzles(args.input, args.output, args.kenken2smt)
     get_statistics(args.output)
     
