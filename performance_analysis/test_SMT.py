@@ -143,6 +143,6 @@ def parse_args(args):
 if __name__ == '__main__':
     args = parse_args(sys.argv[1:])
 
-    #process_puzzles(args.input, args.output, args.kenken2smt)
+    process_puzzles(args.input, args.output, args.kenken2smt)
     get_statistics(args.output)
     
