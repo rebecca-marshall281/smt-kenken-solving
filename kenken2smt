@@ -66,7 +66,12 @@ def add_region_assertions(smt2_lines, puzzle):
 
         else:
             region_num = int(cell[1:])
-            regions[region_num - 1].append("V{}".format(cell_num))
+
+            # this will catch an error where there is a region with no total value
+            try :
+                regions[region_num - 1].append("V{}".format(cell_num))    
+            except:
+                sys.exit(1)
 
         cell_num += 1
 
